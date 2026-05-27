@@ -22,7 +22,6 @@ export default function CurrentMatchPage({ eventManager }: Props) {
   const getTeamDisplay = (playerIds: string[]) => {
     return playerIds.map(getPlayerName).join(' & ');
   };
-  const restingPlayers = round.restingPlayerIds.map(getPlayerName).join(', ');
 
   if (!round) {
     return (
@@ -40,6 +39,7 @@ export default function CurrentMatchPage({ eventManager }: Props) {
     );
   }
 
+  const restingPlayers = round.restingPlayerIds.map(getPlayerName).join(', ');
   const allResultsEntered = round.matches.every((m) => m.result.locked);
 
   const handleNextRound = () => {

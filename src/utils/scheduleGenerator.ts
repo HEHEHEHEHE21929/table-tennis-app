@@ -49,13 +49,15 @@ export function generateMatchSchedule(
     }
   }
 
+  let previousSubIds = new Set<string>();
+
   for (let roundNum = 1; roundNum <= numRounds; roundNum++) {
     const matches: any[] = [];
     const roundUsedPlayers = new Set<string>();
 
     const neededPlayers = numTables * 4;
     const restCount = Math.max(0, activePlayers.length - neededPlayers);
-    const restPlayers = selectRestPlayers(activePlayers, playerStats, restCount);
+    const restPlayers = selectRestPlayers(activePlayers, playerStats, restCount, previousSubIds);
     const restPlayerIds = new Set(restPlayers.map((p) => p.id));
 
     restPlayers.forEach((p) => {
@@ -127,6 +129,8 @@ export function generateMatchSchedule(
       })),
       restingPlayerIds: restPlayers.map((p) => p.id)
     });
+
+    previousSubIds = new Set(restPlayers.map((p) => p.id));
   }
 
   return rounds;
@@ -189,7 +193,8 @@ export function buildPlayerStatsFromRounds(players: Player[], rounds: Round[]): 
 function selectRestPlayers(
   players: Player[],
   playerStats: Map<string, PlayerStats>,
-  restCount: number
+  restCount: number,
+  previousSubIds: Set<string> = new Set()
 ): Player[] {
   if (restCount <= 0) return [];
 
@@ -199,8 +204,11 @@ function selectRestPlayers(
     const restDiff = statsA.restsScheduled - statsB.restsScheduled;
     if (restDiff !== 0) return restDiff;
 
-    const aScore = statsA.subsScheduled + statsA.matchesScheduled;
-    const bScore = statsB.subsScheduled + statsB.matchesScheduled;
+    const penaltyA = previousSubIds.has(a.id) ? 10000 : 0;
+    const penaltyB = previousSubIds.has(b.id) ? 10000 : 0;
+
+    const aScore = statsA.subsScheduled + statsA.matchesScheduled + penaltyA;
+    const bScore = statsB.subsScheduled + statsB.matchesScheduled + penaltyB;
     if (aScore !== bScore) return aScore - bScore;
 
     return a.name.localeCompare(b.name);

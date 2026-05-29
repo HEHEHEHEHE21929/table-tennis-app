@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
-import { EventManager, EventState, Player, PlayerStatus, Round, RoundMatch } from '../types';
+import { EventManager, EventSettings, EventState, Player, PlayerStatus, Round, RoundMatch } from '../types';
 import { generateMatchSchedule, buildPlayerStatsFromRounds } from '../utils/scheduleGenerator';
 import { NUM_ROUNDS, NUM_TABLES, STORAGE_KEY, OLD_STORAGE_KEY } from '../constants';
 import { generatePlayerId, loadEventState, saveEventState } from '../utils/helpers';
@@ -9,7 +9,12 @@ const initialState: EventState = {
   rounds: [],
   currentRoundIndex: 0,
   currentMatchIndex: 0,
-  undoStack: []
+  undoStack: [],
+  settings: {
+    numTables: NUM_TABLES as 1 | 2,
+    teamSize: 2,
+    numRounds: NUM_ROUNDS
+  }
 };
 
 function createEmptyRounds(numRounds: number, numTables: number): Round[] {
@@ -86,7 +91,15 @@ export function useEventManager(): EventManager {
       localStorage.removeItem(OLD_STORAGE_KEY);
     }
     const loaded = loadEventState(STORAGE_KEY);
-    return loaded ?? initialState;
+    if (!loaded) return initialState;
+    return {
+      ...initialState,
+      ...loaded,
+      settings: {
+        ...initialState.settings,
+        ...(loaded.settings ?? {})
+      }
+    };
   });
 
   // Save event state to localStorage whenever it changes
@@ -166,6 +179,17 @@ export function useEventManager(): EventManager {
     }));
   }, []);
 
+  const updateSettings = useCallback((settings: Partial<EventSettings>) => {
+    setState((current: EventState) => ({
+      ...current,
+      undoStack: [...current.undoStack, { ...current, undoStack: [] }],
+      settings: {
+        ...current.settings,
+        ...settings
+      }
+    }));
+  }, []);
+
   const generateSchedule = useCallback(() => {
     setState((current: EventState) => ({
       ...current,
@@ -177,7 +201,12 @@ export function useEventManager(): EventManager {
         subs: 0,
         matchesPlayed: 0
       })),
-      rounds: generateMatchSchedule(current.players, NUM_ROUNDS, NUM_TABLES),
+      rounds: generateMatchSchedule(
+        current.players,
+        current.settings.numRounds,
+        current.settings.numTables,
+        current.settings.teamSize
+      ),
       currentRoundIndex: 0,
       currentMatchIndex: 0
     }));
@@ -191,7 +220,8 @@ export function useEventManager(): EventManager {
         player.status === 'Active' || player.status === 'Arriving later'
       );
 
-      if (activePlayers.length < 4) return current;
+      const requiredPlayers = current.settings.numTables * current.settings.teamSize * 2;
+      if (activePlayers.length < requiredPlayers) return current;
 
       const currentRoundIndex = current.currentRoundIndex;
       const currentRound = current.rounds[currentRoundIndex];
@@ -206,7 +236,7 @@ export function useEventManager(): EventManager {
 
       let regeneratedCurrentRound: Round = currentRound;
       if (unlockedTables > 0 && unlockedPlayers.length >= 4) {
-        const generatedCurrentRounds = generateMatchSchedule(unlockedPlayers, 1, unlockedTables, playerStats);
+        const generatedCurrentRounds = generateMatchSchedule(unlockedPlayers, 1, unlockedTables, current.settings.teamSize, playerStats);
         if (generatedCurrentRounds.length > 0) {
           regeneratedCurrentRound = {
             ...currentRound,
@@ -218,7 +248,7 @@ export function useEventManager(): EventManager {
 
       const futureRoundCount = current.rounds.length - currentRoundIndex - 1;
       const regeneratedFutureRounds = futureRoundCount > 0
-        ? generateMatchSchedule(activePlayers, futureRoundCount, NUM_TABLES, playerStats).map((round, index) => ({
+        ? generateMatchSchedule(activePlayers, futureRoundCount, current.settings.numTables, current.settings.teamSize, playerStats).map((round, index) => ({
             ...round,
             id: `round-${currentRoundIndex + 2 + index}`,
             roundNumber: currentRoundIndex + 2 + index
@@ -285,6 +315,7 @@ export function useEventManager(): EventManager {
     shufflePlayers,
     reorderPlayers,
     clearPlayers,
+    updateSettings,
     generateSchedule,
     regenerateFromCurrent,
     recordResult,

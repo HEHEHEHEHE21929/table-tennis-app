@@ -11,7 +11,7 @@ export interface Player {
 }
 
 export interface MatchTeam {
-  playerIds: [string, string];
+  playerIds: string[];
 }
 
 export interface MatchResult {
@@ -35,12 +35,19 @@ export interface Round {
   restingPlayerIds: string[];
 }
 
+export interface EventSettings {
+  numTables: 1 | 2;
+  teamSize: 1 | 2;
+  numRounds: number;
+}
+
 export interface EventState {
   players: Player[];
   rounds: Round[];
   currentRoundIndex: number;
   currentMatchIndex: number;
   undoStack: EventState[];
+  settings: EventSettings;
 }
 
 export interface EventManager {
@@ -51,6 +58,7 @@ export interface EventManager {
   shufflePlayers: () => void;
   reorderPlayers: (playerId: string, direction: 'up' | 'down') => void;
   clearPlayers: () => void;
+  updateSettings: (settings: Partial<EventSettings>) => void;
   generateSchedule: () => void;
   regenerateFromCurrent: () => void;
   recordResult: (roundIndex: number, matchIndex: number, winnerTeamIndex: 0 | 1) => void;

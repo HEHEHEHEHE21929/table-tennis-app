@@ -13,11 +13,13 @@ export function generateMatchSchedule(
   players: Player[],
   numRounds: number,
   numTables: number,
+  teamSize: number,
   initialStats?: Map<string, PlayerStats>
 ): Round[] {
   const activePlayers = players.filter((p) => p.status === 'Active' || p.status === 'Arriving later');
 
-  if (activePlayers.length < 4 && numTables >= 1) {
+  const neededPlayers = numTables * teamSize * 2;
+  if (activePlayers.length < neededPlayers && numTables >= 1) {
     console.warn('Not enough players for a match');
     return [];
   }
@@ -55,7 +57,7 @@ export function generateMatchSchedule(
     const matches: any[] = [];
     const roundUsedPlayers = new Set<string>();
 
-    const neededPlayers = numTables * 4;
+    const neededPlayers = numTables * teamSize * 2;
     const restCount = Math.max(0, activePlayers.length - neededPlayers);
     const restPlayers = selectRestPlayers(activePlayers, playerStats, restCount, previousSubIds);
     const restPlayerIds = new Set(restPlayers.map((p) => p.id));
@@ -69,45 +71,47 @@ export function generateMatchSchedule(
 
     for (let tableNum = 1; tableNum <= numTables; tableNum++) {
       const availablePlayers = availableForMatches.filter((p) => !roundUsedPlayers.has(p.id));
-      if (availablePlayers.length < 4) break;
+      if (availablePlayers.length < teamSize * 2) break;
 
-      const selected = selectPlayersForMatch(availablePlayers, playerStats, 4);
-      if (selected.length < 4) break;
+      const selected = selectPlayersForMatch(availablePlayers, playerStats, teamSize);
+      if (selected.length < teamSize * 2) break;
 
-      const [p1, p2, p3, p4] = selected;
-      roundUsedPlayers.add(p1.id);
-      roundUsedPlayers.add(p2.id);
-      roundUsedPlayers.add(p3.id);
-      roundUsedPlayers.add(p4.id);
+      selected.forEach((player) => roundUsedPlayers.add(player.id));
 
-      const stats1 = playerStats.get(p1.id)!;
-      const stats2 = playerStats.get(p2.id)!;
-      const stats3 = playerStats.get(p3.id)!;
-      const stats4 = playerStats.get(p4.id)!;
+      selected.forEach((player) => {
+        playerStats.get(player.id)!.matchesScheduled++;
+      });
 
-      stats1.matchesScheduled++;
-      stats2.matchesScheduled++;
-      stats3.matchesScheduled++;
-      stats4.matchesScheduled++;
+      const teamAIds = selected.slice(0, teamSize).map((player) => player.id);
+      const teamBIds = selected.slice(teamSize).map((player) => player.id);
 
-      stats1.partners.add(p2.id);
-      stats2.partners.add(p1.id);
-      stats3.partners.add(p4.id);
-      stats4.partners.add(p3.id);
+      const teamAPlayers = selected.slice(0, teamSize);
+      const teamBPlayers = selected.slice(teamSize);
 
-      stats1.opponents.add(p3.id);
-      stats1.opponents.add(p4.id);
-      stats2.opponents.add(p3.id);
-      stats2.opponents.add(p4.id);
-      stats3.opponents.add(p1.id);
-      stats3.opponents.add(p2.id);
-      stats4.opponents.add(p1.id);
-      stats4.opponents.add(p2.id);
+      teamAPlayers.forEach((player) => {
+        const stats = playerStats.get(player.id)!;
+        for (const partner of teamAPlayers) {
+          if (partner.id !== player.id) stats.partners.add(partner.id);
+        }
+        for (const opponent of teamBPlayers) {
+          stats.opponents.add(opponent.id);
+        }
+      });
+
+      teamBPlayers.forEach((player) => {
+        const stats = playerStats.get(player.id)!;
+        for (const partner of teamBPlayers) {
+          if (partner.id !== player.id) stats.partners.add(partner.id);
+        }
+        for (const opponent of teamAPlayers) {
+          stats.opponents.add(opponent.id);
+        }
+      });
 
       matches.push({
         table: tableNum,
-        teamA: { playerIds: [p1.id, p2.id] },
-        teamB: { playerIds: [p3.id, p4.id] },
+        teamA: { playerIds: teamAIds },
+        teamB: { playerIds: teamBIds },
         subs: [],
         result: { winnerTeamIndex: null, locked: false }
       });
@@ -220,8 +224,9 @@ function selectRestPlayers(
 function selectPlayersForMatch(
   players: Player[],
   playerStats: Map<string, PlayerStats>,
-  needed: number
+  teamSize: number
 ): Player[] {
+  const needed = teamSize * 2;
   if (players.length < needed) {
     return [];
   }
@@ -234,23 +239,32 @@ function selectPlayersForMatch(
     return aScore - bScore || a.name.localeCompare(b.name);
   });
 
+  const selected: Player[] = [];
   const first = sortedPlayers[0];
-  const partner = findBestPartner(first, sortedPlayers.slice(1), playerStats);
-  if (!partner) return [];
+  selected.push(first);
 
-  const remainingAfterPartner = sortedPlayers.filter((player) => player.id !== partner.id && player.id !== first.id);
-  const opponent1 = findBestOpponent([first, partner], remainingAfterPartner, playerStats);
-  if (!opponent1) return [];
+  let remaining = sortedPlayers.filter((player) => player.id !== first.id);
 
-  const remainingAfterOpp1 = remainingAfterPartner.filter((player) => player.id !== opponent1.id);
-  const opponent2 = findBestOpponent([first, partner], remainingAfterOpp1, playerStats);
-  if (!opponent2) return [];
+  if (teamSize > 1) {
+    const partner = findBestPartner(first, remaining, playerStats);
+    if (!partner) return [];
+    selected.push(partner);
+    remaining = remaining.filter((player) => player.id !== partner.id);
+  }
 
-  if (new Set([first.id, partner.id, opponent1.id, opponent2.id]).size !== 4) {
+  while (selected.length < needed) {
+    const teamA = selected.slice(0, teamSize);
+    const opponent = findBestOpponent(teamA, remaining, playerStats);
+    if (!opponent) return [];
+    selected.push(opponent);
+    remaining = remaining.filter((player) => player.id !== opponent.id);
+  }
+
+  if (new Set(selected.map((player) => player.id)).size !== needed) {
     return [];
   }
 
-  return [first, partner, opponent1, opponent2];
+  return selected;
 }
 
 function findBestPartner(

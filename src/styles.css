@@ -403,11 +403,60 @@ section {
   gap: 16px;
 }
 
+.settings-options {
+  display: grid;
+  gap: 14px;
+}
+
+@media (min-width: 768px) {
+  .settings-options {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.settings-field {
+  display: grid;
+  gap: 8px;
+}
+
+.settings-field-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.settings-field label {
+  color: #334155;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.settings-field select,
+.settings-field input[type='range'] {
+  width: 100%;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  padding: 0.85rem 0.95rem;
+  background: white;
+}
+
 .settings-info {
   background: var(--surface-muted);
   padding: 20px;
   border-radius: 18px;
   margin-bottom: 20px;
+}
+
+.settings-info.compact-summary {
+  display: grid;
+  gap: 10px;
+  padding: 16px;
+}
+
+.settings-actions {
+  display: grid;
+  gap: 12px;
 }
 
 .settings-info p {
@@ -568,6 +617,20 @@ select {
   margin: 0;
 }
 
+.player-list,
+.history-list,
+.schedule-grid {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.player-list {
+  max-height: 44vh;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
 .player-item,
 .match-item,
 .history-entry,
@@ -655,8 +718,8 @@ select {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 16px;
-  padding: 18px;
+  gap: 12px;
+  padding: 16px;
 }
 
 .player-info {
@@ -1345,6 +1408,16 @@ select {
   .round-card {
     background: #ffffff;
     border: 1px solid rgba(148, 163, 184, 0.2);
+  }
+
+  .settings-field select,
+  .settings-field input[type='range'] {
+    padding: 0.7rem 0.9rem;
+  }
+
+  .player-actions-inline button,
+  .player-actions-inline select {
+    width: 100%;
   }
 
   .player-info {

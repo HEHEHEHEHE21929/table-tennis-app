@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { EventManager, PlayerStatus } from '../types';
+import { EventManager, EventSettings, PlayerStatus } from '../types';
 import { useAppToast } from '../context/ToastContext';
 
 interface Props {
@@ -13,6 +13,15 @@ export default function SetupPage({ eventManager }: Props) {
   const [name, setName] = useState('');
   const { showToast } = useAppToast();
   const navigate = useNavigate();
+
+  const settings = eventManager.state.settings;
+  const activePlayers = eventManager.state.players.filter(p => p.status === 'Active' || p.status === 'Arriving later');
+  const requiredPlayers = settings.numTables * settings.teamSize * 2;
+  const canGenerate = activePlayers.length >= requiredPlayers;
+
+  const handleSettingsChange = (updates: Partial<EventSettings>) => {
+    eventManager.updateSettings(updates);
+  };
 
   const handleAddPlayer = () => {
     if (!name.trim()) {
@@ -46,8 +55,11 @@ export default function SetupPage({ eventManager }: Props) {
   };
 
   const handleGenerateSchedule = () => {
-    if (eventManager.state.players.filter(p => p.status === 'Active' || p.status === 'Arriving later').length < 4) {
-      showToast('Need at least 4 active or arriving players to generate a schedule', 'error');
+    if (!canGenerate) {
+      showToast(
+        `Need at least ${requiredPlayers} active or arriving players for ${settings.teamSize}v${settings.teamSize} on ${settings.numTables} table${settings.numTables > 1 ? 's' : ''}`,
+        'error'
+      );
       return;
     }
     eventManager.generateSchedule();
@@ -99,10 +111,10 @@ export default function SetupPage({ eventManager }: Props) {
         <button
           className="primary-btn"
           onClick={handleGenerateSchedule}
-          disabled={eventManager.state.players.filter(p => p.status === 'Active' || p.status === 'Arriving later').length < 4}
+          disabled={!canGenerate}
           title="Generate schedule and navigate to Schedule page"
         >
-          Generate Plan
+          🚀 Generate Plan
         </button>
       </div>
 
@@ -195,36 +207,80 @@ export default function SetupPage({ eventManager }: Props) {
         <div className="panel settings-panel">
           <div className="panel-header">
             <div>
-              <h3>Event Settings</h3>
-              <p className="panel-note">Quick actions and info</p>
+              <h3>Event Settings ⚙️</h3>
+              <p className="panel-note">Choose tables, game mode and rounds</p>
             </div>
           </div>
 
           <div className="settings-card success-box">
-            <h4>Current Configuration</h4>
-            <div className="settings-info">
-              <p><strong>Tables:</strong> 2</p>
-              <p><strong>Game type:</strong> 2v2</p>
-              <p><strong>Total rounds:</strong> 10</p>
-              <p><strong>Active players:</strong> {eventManager.state.players.filter(p => p.status === 'Active' || p.status === 'Arriving later').length}</p>
+            <div className="settings-options">
+              <div className="settings-field">
+                <label htmlFor="tables">Tables</label>
+                <select
+                  id="tables"
+                  value={settings.numTables}
+                  onChange={(event) => handleSettingsChange({ numTables: Number(event.target.value) as 1 | 2 })}
+                >
+                  <option value={1}>1 table 🏓</option>
+                  <option value={2}>2 tables 🏓🏓</option>
+                </select>
+              </div>
+
+              <div className="settings-field">
+                <label htmlFor="gameType">Game type</label>
+                <select
+                  id="gameType"
+                  value={settings.teamSize}
+                  onChange={(event) => handleSettingsChange({ teamSize: Number(event.target.value) as 1 | 2 })}
+                >
+                  <option value={1}>1v1</option>
+                  <option value={2}>2v2</option>
+                </select>
+              </div>
+
+              <div className="settings-field">
+                <div className="settings-field-row">
+                  <label htmlFor="rounds">Rounds</label>
+                  <span>{settings.numRounds}</span>
+                </div>
+                <input
+                  id="rounds"
+                  type="range"
+                  min={1}
+                  max={10}
+                  value={settings.numRounds}
+                  onChange={(event) => handleSettingsChange({ numRounds: Number(event.target.value) })}
+                />
+              </div>
             </div>
-            <button
-              className="success-btn"
-              onClick={handleGenerateSchedule}
-              disabled={eventManager.state.players.filter(p => p.status === 'Active' || p.status === 'Arriving later').length < 4}
-            >
-              Generate New Schedule
-            </button>
+
+            <h4>Current Configuration</h4>
+            <div className="settings-info compact-summary">
+              <p><strong>Tables:</strong> {settings.numTables}</p>
+              <p><strong>Game:</strong> {settings.teamSize}v{settings.teamSize}</p>
+              <p><strong>Rounds:</strong> {settings.numRounds}</p>
+              <p><strong>Active players:</strong> {activePlayers.length} / {requiredPlayers} required</p>
+            </div>
+
+            <div className="settings-actions">
+              <button
+                className="success-btn"
+                onClick={handleGenerateSchedule}
+                disabled={!canGenerate}
+              >
+                🧩 Generate Schedule
+              </button>
               <button
                 className="secondary-btn"
                 onClick={handleRegenerateFromCurrent}
                 disabled={eventManager.state.rounds.length === 0}
               >
-                Regenerate from current round
+                🔄 Regenerate from current round
               </button>
-              <p className="warning-note">Completed matches will stay locked. Only upcoming matches will change.</p>
+            </div>
+            <p className="warning-note">Completed matches stay locked. Upcoming matches update from the current round.</p>
             <button className="danger-btn" onClick={handleClearAllPlayers} disabled={eventManager.state.players.length === 0}>
-              Clear All Players
+              🗑️ Clear All Players
             </button>
           </div>
         </div>

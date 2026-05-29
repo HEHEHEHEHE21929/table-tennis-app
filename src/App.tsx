@@ -14,15 +14,18 @@ function App() {
   const eventManager = useEventManager();
   const toast = useToast();
 
-  const [viewMode, setViewMode] = useState<'mobile' | 'web'>(() => {
-    const saved = window.localStorage.getItem('viewMode');
-    if (saved === 'mobile' || saved === 'web') return saved;
-    return window.innerWidth < 768 ? 'mobile' : 'web';
-  });
+  const [viewMode, setViewMode] = useState<'mobile' | 'web'>(
+    window.innerWidth < 768 ? 'mobile' : 'web'
+  );
 
   useEffect(() => {
-    window.localStorage.setItem('viewMode', viewMode);
-  }, [viewMode]);
+    const handleResize = () => {
+      setViewMode(window.innerWidth < 768 ? 'mobile' : 'web');
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   return (
     <ToastContext.Provider value={toast}>
@@ -37,22 +40,6 @@ function App() {
             </div>
           </div>
           <div className="app-actions">
-            <div className="view-mode-toggle" role="group" aria-label="Choose interface view">
-              <button
-                type="button"
-                className={viewMode === 'mobile' ? 'mode-btn active' : 'mode-btn'}
-                onClick={() => setViewMode('mobile')}
-              >
-                Mobile
-              </button>
-              <button
-                type="button"
-                className={viewMode === 'web' ? 'mode-btn active' : 'mode-btn'}
-                onClick={() => setViewMode('web')}
-              >
-                Web
-              </button>
-            </div>
             <button className="icon-btn" aria-label="Notifications">🔔</button>
           </div>
         </header>

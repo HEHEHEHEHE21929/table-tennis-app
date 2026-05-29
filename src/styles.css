@@ -1226,19 +1226,43 @@ select {
 @media (max-width: 767px) {
   .app-bar {
     flex-wrap: wrap;
-    align-items: center;
+    align-items: flex-start;
+    padding: 18px 16px;
+    gap: 12px;
   }
 
   .app-brand {
     flex: 1 1 100%;
+    min-width: 0;
   }
 
   .app-bar h1 {
     font-size: 1.15rem;
+    line-height: 1.2;
   }
 
   .app-actions {
-    flex-shrink: 0;
+    width: 100%;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .view-mode-toggle {
+    width: 100%;
+    justify-content: flex-start;
+    gap: 8px;
+    padding-top: 8px;
+  }
+
+  .mode-btn {
+    flex: 1;
+    min-width: 0;
+    padding: 0.7rem 0.9rem;
+  }
+
+  .app-bar .icon-btn {
+    width: 42px;
+    height: 42px;
   }
 
   .page-content {
@@ -1247,7 +1271,9 @@ select {
 
   .panel,
   section {
-    padding: 14px;
+    padding: 16px;
+    margin-bottom: 14px;
+    border-radius: 20px;
   }
 
   .page-header,
@@ -1256,10 +1282,13 @@ select {
   .panel-header {
     flex-direction: column;
     align-items: stretch;
+    gap: 10px;
+    margin-bottom: 18px;
   }
 
   .form-row {
     grid-template-columns: 1fr;
+    gap: 14px;
   }
 
   .form-row > * {
@@ -1270,6 +1299,16 @@ select {
     flex-direction: column;
     align-items: stretch;
     gap: 12px;
+    padding: 16px;
+    border-radius: 20px;
+  }
+
+  .player-item,
+  .match-card,
+  .history-card,
+  .round-card {
+    background: #ffffff;
+    border: 1px solid rgba(148, 163, 184, 0.2);
   }
 
   .player-info {
@@ -1289,11 +1328,20 @@ select {
     width: 100%;
   }
 
+  .app-footer {
+    justify-content: center;
+    padding: 10px 14px;
+  }
+
   .app-footer a {
-    flex: 1 1 45%;
+    flex: 1 1 48%;
     min-width: 120px;
-    padding: 10px 8px;
-    font-size: 0.9rem;
+    padding: 12px 10px;
+    font-size: 0.95rem;
+  }
+
+  .page-tag {
+    padding: 8px 14px;
   }
 
   .team-pairing {
@@ -1308,7 +1356,8 @@ select {
   }
 
   .match-card {
-    padding: 16px;
+    padding: 18px;
+    border-radius: 20px;
   }
 
   .results-table th,
@@ -1355,7 +1404,7 @@ select {
 
   .pp-side {
     min-height: 120px;
-    padding: 14px;
+    padding: 16px;
   }
 }
 

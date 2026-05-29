@@ -64,7 +64,7 @@ export default function SetupPage({ eventManager }: Props) {
     }
     eventManager.generateSchedule();
     showToast('Schedule generated successfully!', 'success');
-    setTimeout(() => navigate('/schedule'), 0);
+    setTimeout(() => navigate('/current'), 0);
   };
 
   const handleRegenerateFromCurrent = () => {
@@ -215,7 +215,7 @@ export default function SetupPage({ eventManager }: Props) {
           <div className="settings-card success-box">
             <div className="settings-options">
               <div className="settings-field">
-                <label htmlFor="tables">Tables</label>
+                <label htmlFor="tables">Tables 🏓</label>
                 <select
                   id="tables"
                   value={settings.numTables}
@@ -227,20 +227,20 @@ export default function SetupPage({ eventManager }: Props) {
               </div>
 
               <div className="settings-field">
-                <label htmlFor="gameType">Game type</label>
+                <label htmlFor="gameType">Game mode 🎮</label>
                 <select
                   id="gameType"
                   value={settings.teamSize}
                   onChange={(event) => handleSettingsChange({ teamSize: Number(event.target.value) as 1 | 2 })}
                 >
-                  <option value={1}>1v1</option>
-                  <option value={2}>2v2</option>
+                  <option value={1}>1v1 🤜🤛</option>
+                  <option value={2}>2v2 🧑‍🤝‍🧑</option>
                 </select>
               </div>
 
               <div className="settings-field">
                 <div className="settings-field-row">
-                  <label htmlFor="rounds">Rounds</label>
+                  <label htmlFor="rounds">Rounds 🔢</label>
                   <span>{settings.numRounds}</span>
                 </div>
                 <input
@@ -254,12 +254,12 @@ export default function SetupPage({ eventManager }: Props) {
               </div>
             </div>
 
-            <h4>Current Configuration</h4>
+            <h4>Current Configuration ✨</h4>
             <div className="settings-info compact-summary">
-              <p><strong>Tables:</strong> {settings.numTables}</p>
-              <p><strong>Game:</strong> {settings.teamSize}v{settings.teamSize}</p>
-              <p><strong>Rounds:</strong> {settings.numRounds}</p>
-              <p><strong>Active players:</strong> {activePlayers.length} / {requiredPlayers} required</p>
+              <p>🏓 <strong>Tables:</strong> {settings.numTables}</p>
+              <p>🎮 <strong>Game:</strong> {settings.teamSize}v{settings.teamSize}</p>
+              <p>🔢 <strong>Rounds:</strong> {settings.numRounds}</p>
+              <p>👥 <strong>Active players:</strong> {activePlayers.length} / {requiredPlayers} required</p>
             </div>
 
             <div className="settings-actions">

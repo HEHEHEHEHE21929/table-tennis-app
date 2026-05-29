@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { Route, Routes, NavLink, Navigate } from 'react-router-dom';
 import { useEventManager } from './state/useEventManager';
 import { ToastContext } from './context/ToastContext';
@@ -13,10 +14,20 @@ function App() {
   const eventManager = useEventManager();
   const toast = useToast();
 
+  const [viewMode, setViewMode] = useState<'mobile' | 'web'>(() => {
+    const saved = window.localStorage.getItem('viewMode');
+    if (saved === 'mobile' || saved === 'web') return saved;
+    return window.innerWidth < 768 ? 'mobile' : 'web';
+  });
+
+  useEffect(() => {
+    window.localStorage.setItem('viewMode', viewMode);
+  }, [viewMode]);
+
   return (
     <ToastContext.Provider value={toast}>
       <a href="#main-content" className="skip-link">Skip to main content</a>
-      <div className="app-shell">
+      <div className={`app-shell ${viewMode}-mode`}>
         <header className="app-bar" role="banner">
           <div className="app-brand">
             <div className="app-logo" aria-label="Table Tennis Event Manager Logo">TT</div>
@@ -26,6 +37,22 @@ function App() {
             </div>
           </div>
           <div className="app-actions">
+            <div className="view-mode-toggle" role="group" aria-label="Choose interface view">
+              <button
+                type="button"
+                className={viewMode === 'mobile' ? 'mode-btn active' : 'mode-btn'}
+                onClick={() => setViewMode('mobile')}
+              >
+                Mobile
+              </button>
+              <button
+                type="button"
+                className={viewMode === 'web' ? 'mode-btn active' : 'mode-btn'}
+                onClick={() => setViewMode('web')}
+              >
+                Web
+              </button>
+            </div>
             <button className="icon-btn" aria-label="Notifications">🔔</button>
           </div>
         </header>

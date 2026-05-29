@@ -134,6 +134,7 @@ a:focus-visible {
   display: flex;
   align-items: center;
   gap: 16px;
+  min-width: 0;
 }
 
 .app-logo {
@@ -177,6 +178,30 @@ a:focus-visible {
   gap: 12px;
 }
 
+.view-mode-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.mode-btn {
+  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  padding: 0.65rem 0.95rem;
+  border-radius: 9999px;
+  font-weight: 600;
+  cursor: pointer;
+  min-width: 80px;
+}
+
+.mode-btn.active {
+  background: white;
+  color: var(--primary);
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12);
+}
+
 .icon-btn {
   width: 44px;
   height: 44px;
@@ -208,6 +233,7 @@ a:focus-visible {
 
 .app-footer {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
   gap: 6px;
@@ -994,6 +1020,7 @@ select {
 .results-table {
   width: 100%;
   border-collapse: collapse;
+  min-width: auto;
 }
 
 .results-table th,
@@ -1193,5 +1220,323 @@ select {
   .schedule-list {
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
     gap: 24px;
+  }
+}
+
+@media (max-width: 767px) {
+  .app-bar {
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .app-brand {
+    flex: 1 1 100%;
+  }
+
+  .app-bar h1 {
+    font-size: 1.15rem;
+  }
+
+  .app-actions {
+    flex-shrink: 0;
+  }
+
+  .page-content {
+    padding: 18px 14px;
+  }
+
+  .panel,
+  section {
+    padding: 14px;
+  }
+
+  .page-header,
+  .history-header,
+  .round-card-header,
+  .panel-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .form-row > * {
+    width: 100%;
+  }
+
+  .player-item {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .player-info {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .player-item select {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .player-actions,
+  .player-actions-inline,
+  .button-row {
+    width: 100%;
+  }
+
+  .app-footer a {
+    flex: 1 1 45%;
+    min-width: 120px;
+    padding: 10px 8px;
+    font-size: 0.9rem;
+  }
+
+  .team-pairing {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin: 0;
+  }
+
+  .team-pairing .vs {
+    margin: 0;
+  }
+
+  .match-card {
+    padding: 16px;
+  }
+
+  .results-table th,
+  .results-table td {
+    padding: 10px 12px;
+  }
+
+  .results-table {
+    min-width: 100%;
+  }
+
+  .results-table-wrapper {
+    overflow-x: auto;
+  }
+
+  .pingpong-wrapper,
+  .pingpong-table {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .pingpong-table {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 12px 1fr;
+    padding: 18px 16px;
+    min-height: 240px;
+  }
+
+  .pingpong-table::after {
+    left: 18px;
+    right: 18px;
+    top: 50%;
+    bottom: auto;
+    width: auto;
+    height: 4px;
+    transform: translateY(-50%);
+  }
+
+  .pp-net {
+    width: calc(100% - 36px);
+    height: 12px;
+    margin: 12px 0;
+  }
+
+  .pp-side {
+    min-height: 120px;
+    padding: 14px;
+  }
+}
+
+/* Force desktop-style layout even on narrow screens */
+@media (max-width: 767px) {
+  .app-shell.web-mode .app-bar {
+    gap: 16px;
+    padding: 18px 24px;
+    border-radius: var(--radius-xl);
+    margin-bottom: 24px;
+    box-shadow: 0 18px 50px rgba(15, 23, 42, 0.15);
+  }
+
+  .app-shell.web-mode .app-bar h1 {
+    font-size: 1.35rem;
+  }
+
+  .app-shell.web-mode .page-content {
+    padding: 24px 16px;
+  }
+
+  .app-shell.web-mode .panel,
+  .app-shell.web-mode section {
+    padding: 24px;
+  }
+
+  .app-shell.web-mode .page-header,
+  .app-shell.web-mode .history-header,
+  .app-shell.web-mode .round-card-header,
+  .app-shell.web-mode .panel-header {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .app-shell.web-mode .form-row {
+    grid-template-columns: 1fr auto;
+  }
+
+  .app-shell.web-mode .player-item {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .app-shell.web-mode .player-info {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .app-shell.web-mode .player-item select {
+    width: auto;
+    min-width: 140px;
+  }
+
+  .app-shell.web-mode .app-footer a {
+    flex: 1;
+    min-width: 0;
+    padding: 12px 14px;
+    font-size: 1rem;
+  }
+
+  .app-shell.web-mode .team-pairing {
+    display: flex;
+    gap: 12px;
+    margin: 20px 0;
+  }
+
+  .app-shell.web-mode .match-card {
+    padding: 18px;
+  }
+
+  .app-shell.web-mode .pingpong-table {
+    grid-template-columns: 1fr 12px 1fr;
+    padding: 32px 28px;
+    min-height: 360px;
+  }
+
+  .app-shell.web-mode .pingpong-table::after {
+    left: 50%;
+    right: auto;
+    top: 28px;
+    bottom: 28px;
+    width: 4px;
+    height: auto;
+    transform: translateX(-50%);
+  }
+}
+
+/* Preserve mobile-style layout on wide screens */
+@media (min-width: 768px) {
+  .app-shell.mobile-mode .app-bar {
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 18px 24px;
+    margin-bottom: 0;
+    border-radius: 0;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.1);
+  }
+
+  .app-shell.mobile-mode .app-bar h1 {
+    font-size: 1.15rem;
+  }
+
+  .app-shell.mobile-mode .page-content {
+    padding: 18px 14px;
+  }
+
+  .app-shell.mobile-mode .panel,
+  .app-shell.mobile-mode section {
+    padding: 14px;
+  }
+
+  .app-shell.mobile-mode .page-header,
+  .app-shell.mobile-mode .history-header,
+  .app-shell.mobile-mode .round-card-header,
+  .app-shell.mobile-mode .panel-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .app-shell.mobile-mode .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .app-shell.mobile-mode .player-item {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .app-shell.mobile-mode .player-info {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .app-shell.mobile-mode .player-item select {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .app-shell.mobile-mode .app-footer a {
+    flex: 1 1 45%;
+    min-width: 120px;
+    padding: 10px 8px;
+    font-size: 0.9rem;
+  }
+
+  .app-shell.mobile-mode .team-pairing {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin: 0;
+  }
+
+  .app-shell.mobile-mode .match-card {
+    padding: 16px;
+  }
+
+  .app-shell.mobile-mode .pingpong-table {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 12px 1fr;
+    padding: 18px 16px;
+    min-height: 240px;
+  }
+
+  .app-shell.mobile-mode .pingpong-table::after {
+    left: 18px;
+    right: 18px;
+    top: 50%;
+    bottom: auto;
+    width: auto;
+    height: 4px;
+    transform: translateY(-50%);
+  }
+
+  .app-shell.mobile-mode .pp-net {
+    width: calc(100% - 36px);
+    height: 12px;
+    margin: 12px 0;
+  }
+
+  .app-shell.mobile-mode .pp-side {
+    min-height: 120px;
+    padding: 14px;
   }
 }

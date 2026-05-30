@@ -1438,15 +1438,26 @@ select {
   }
 
   .app-footer {
-    justify-content: center;
-    padding: 10px 14px;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    overflow-x: hidden;
+    overflow-y: visible;
+    height: auto !important;
+    min-height: 56px;
+    padding: 10px 10px 12px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 20;
   }
 
   .app-footer a {
-    flex: 1 1 48%;
-    min-width: 120px;
+    flex: 0 0 48%;
+    min-width: 0;
     padding: 12px 10px;
     font-size: 0.95rem;
+    margin-bottom: 8px;
   }
 
   .page-tag {
@@ -1499,6 +1510,10 @@ select {
     .panel.players-panel,
     .panel.settings-panel {
       padding: 12px;
+    }
+
+    .page-content {
+      padding-bottom: 180px;
     }
   }
 

@@ -11,6 +11,7 @@ const statuses: PlayerStatus[] = ['Active', 'Resting', 'Left', 'Arriving later']
 
 export default function SetupPage({ eventManager }: Props) {
   const [name, setName] = useState('');
+  const [compactMode, setCompactMode] = useState<boolean>(window.innerWidth < 768);
   const { showToast } = useAppToast();
   const navigate = useNavigate();
 
@@ -108,14 +109,24 @@ export default function SetupPage({ eventManager }: Props) {
           <p className="page-tag">Setup</p>
           <h2>Manage players and generate the match plan</h2>
         </div>
-        <button
-          className="primary-btn"
-          onClick={handleGenerateSchedule}
-          disabled={!canGenerate}
-          title="Generate schedule and navigate to Schedule page"
-        >
-          🚀 Generate Plan
-        </button>
+        <div style={{display: 'flex', gap: 8, alignItems: 'center'}}>
+          <button
+            className="ghost-btn"
+            onClick={() => setCompactMode(!compactMode)}
+            title={compactMode ? 'Expand layout' : 'Compact layout'}
+            aria-pressed={compactMode}
+          >
+            {compactMode ? '🔎 Expand' : '🧾 Compact'}
+          </button>
+          <button
+            className="primary-btn"
+            onClick={handleGenerateSchedule}
+            disabled={!canGenerate}
+            title="Generate schedule and navigate to Current match"
+          >
+            🚀 Generate Plan
+          </button>
+        </div>
       </div>
 
       <div className="setup-grid">
@@ -149,7 +160,7 @@ export default function SetupPage({ eventManager }: Props) {
             </button>
           </form>
 
-          <ul className="player-list">
+          <ul className={`player-list ${compactMode ? 'compact' : ''}`}>
             {eventManager.state.players.map((player, index) => (
               <li key={player.id} className={`player-item status-${player.status.toLowerCase().replace(' ', '-')}`}>
                 <div className="player-info">
@@ -210,9 +221,14 @@ export default function SetupPage({ eventManager }: Props) {
               <h3>Event Settings ⚙️</h3>
               <p className="panel-note">Choose tables, game mode and rounds</p>
             </div>
+            <div style={{display: 'flex', gap: 8}}>
+              <button className="ghost-btn" onClick={() => setCompactMode(!compactMode)}>
+                {compactMode ? '🔎 Expand' : '🧾 Compact'}
+              </button>
+            </div>
           </div>
 
-          <div className="settings-card success-box">
+          <div className={`settings-card success-box ${compactMode ? 'compact' : ''}`}>
             <div className="settings-options">
               <div className="settings-field">
                 <label htmlFor="tables">Tables 🏓</label>

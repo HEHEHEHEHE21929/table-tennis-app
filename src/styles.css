@@ -1745,18 +1745,21 @@ select {
    Panels will scroll internally when content overflows. */
 @media (max-width: 767px) {
   :root {
-    --header-height: 68px;
-    --footer-height: 64px;
+    --header-height: 60px;
+    --footer-height: 56px;
   }
 
-  html, body, #root, .app-shell {
+  html, body {
     height: 100%;
+    margin: 0;
+    overflow: hidden; /* prevent page-level scrolling */
   }
 
-  .app-shell {
+  #root, .app-shell {
     height: 100vh;
     max-width: 100%;
     margin: 0 auto;
+    overflow: hidden;
   }
 
   .app-bar {
@@ -1765,7 +1768,7 @@ select {
     left: 0;
     right: 0;
     height: var(--header-height);
-    padding: 10px 12px;
+    padding: 8px 10px;
     z-index: 40;
   }
 
@@ -1775,7 +1778,7 @@ select {
     left: 0;
     right: 0;
     height: var(--footer-height);
-    padding: 8px 10px;
+    padding: 6px 8px;
     z-index: 40;
   }
 
@@ -1785,23 +1788,24 @@ select {
     bottom: var(--footer-height);
     left: 0;
     right: 0;
-    padding: 10px;
-    overflow: hidden; /* avoid whole-page scroll */
+    padding: 8px;
+    overflow: auto; /* main content scrolls internally */
+    -webkit-overflow-scrolling: touch;
   }
 
   .setup-grid {
-    display: grid;
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
     gap: 8px;
     height: 100%;
-    align-content: start;
   }
 
   .panel {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    height: calc(50% - 8px);
+    flex: 1 1 0;
+    min-height: 0; /* allow children to scroll */
     overflow: hidden;
   }
 

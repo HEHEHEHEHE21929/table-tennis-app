@@ -14,17 +14,38 @@ function App() {
   const eventManager = useEventManager();
   const toast = useToast();
 
-  const [viewMode, setViewMode] = useState<'mobile' | 'web'>(
-    window.innerWidth < 768 ? 'mobile' : 'web'
+  const [viewMode, setViewMode] = useState<'mobile' | 'web'>(() =>
+    window.matchMedia && window.matchMedia('(max-width: 767px)').matches ? 'mobile' : 'web'
   );
 
+  // Keep a CSS variable for viewport height to avoid mobile address-bar issues
   useEffect(() => {
-    const handleResize = () => {
-      setViewMode(window.innerWidth < 768 ? 'mobile' : 'web');
+    const setVh = () => {
+      document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
     };
+    setVh();
+    window.addEventListener('resize', setVh);
+    window.addEventListener('orientationchange', setVh);
+    return () => {
+      window.removeEventListener('resize', setVh);
+      window.removeEventListener('orientationchange', setVh);
+    };
+  }, []);
 
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+  // Use matchMedia to update view mode responsively
+  useEffect(() => {
+    if (!window.matchMedia) return;
+    const mq = window.matchMedia('(max-width: 767px)');
+    const handler = (e: MediaQueryListEvent | MediaQueryList) => setViewMode(e.matches ? 'mobile' : 'web');
+    // call once to sync
+    handler(mq);
+    if ('addEventListener' in mq) {
+      (mq as any).addEventListener('change', handler);
+      return () => (mq as any).removeEventListener('change', handler);
+    }
+    // fallback for older browsers / TS typing
+    (mq as any).addListener(handler);
+    return () => (mq as any).removeListener(handler);
   }, []);
 
   return (

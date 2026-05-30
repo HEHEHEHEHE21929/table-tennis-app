@@ -45,7 +45,7 @@ body {
 #root {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  min-height: calc(var(--vh, 1vh) * 100);
   width: 100%;
 }
 
@@ -102,7 +102,7 @@ a:focus-visible {
 .app-shell {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  min-height: calc(var(--vh, 1vh) * 100);
   width: 100%;
   overflow: hidden;
   max-width: 1240px;

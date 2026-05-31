@@ -13,7 +13,7 @@ export function useToast() {
     const id = Math.random().toString(36).substr(2, 9);
     const toast: Toast = { id, message, type };
 
-    setToasts((current) => [...current, toast]);
+    setToasts(() => [toast]);
 
     if (duration > 0) {
       setTimeout(() => {

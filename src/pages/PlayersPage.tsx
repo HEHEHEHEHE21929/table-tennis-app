@@ -1,14 +1,23 @@
 import { type FormEvent, useState } from 'react';
-import { EventManager } from '../types';
+import { EventManager, type PlayerStatus } from '../types';
 import { useAppToast } from '../context/ToastContext';
 
 interface Props {
   eventManager: EventManager;
 }
 
+const statuses: PlayerStatus[] = ['Active', 'Resting', 'Left', 'Arriving later'];
+
 export default function PlayersPage({ eventManager }: Props) {
   const [name, setName] = useState('');
   const { showToast } = useAppToast();
+
+  const handleTogglePlayerStatus = (playerId: string, currentStatus: PlayerStatus, playerName: string) => {
+    const nextIndex = (statuses.indexOf(currentStatus) + 1) % statuses.length;
+    const nextStatus = statuses[nextIndex];
+    eventManager.changePlayerStatus(playerId, nextStatus);
+    showToast(`${playerName} status changed to ${nextStatus}`, 'success');
+  };
 
   const handleAddPlayer = () => {
     if (!name.trim()) {
@@ -75,7 +84,15 @@ export default function PlayersPage({ eventManager }: Props) {
             <li key={player.id} className={`player-item status-${player.status.toLowerCase().replace(' ', '-')}`}>
               <div className="player-info">
                 <span className="player-name">{player.name}</span>
-                <span className="player-status">{player.status}</span>
+                <button
+                  type="button"
+                  className="player-status"
+                  onClick={() => handleTogglePlayerStatus(player.id, player.status, player.name)}
+                  title={`Change ${player.name} status`}
+                  aria-label={`Change ${player.name} status`}
+                >
+                  {player.status}
+                </button>
               </div>
               <div className="player-actions-inline">
                 <button
@@ -96,16 +113,6 @@ export default function PlayersPage({ eventManager }: Props) {
                 >
                   ▼
                 </button>
-                <select
-                  value={player.status}
-                  onChange={(event) => eventManager.changePlayerStatus(player.id, event.target.value as any)}
-                  title="Change player status"
-                >
-                  <option value="Active">Active</option>
-                  <option value="Resting">Resting</option>
-                  <option value="Left">Left</option>
-                  <option value="Arriving later">Arriving later</option>
-                </select>
                 <button
                   className="remove-btn"
                   onClick={() => handleRemovePlayer(player.id, player.name)}

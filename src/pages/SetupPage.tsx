@@ -106,9 +106,9 @@ export default function SetupPage({ eventManager }: Props) {
   return (
     <section className="page-section">
       <div className="page-header">
-        <div>
+          <div>
           <p className="page-tag">Setup</p>
-          <h2>Manage players and generate the match plan</h2>
+          <h2>Manage players and generate the match schedule</h2>
         </div>
         <div style={{display: 'flex', gap: 8, alignItems: 'center'}}>
           <button
@@ -125,7 +125,7 @@ export default function SetupPage({ eventManager }: Props) {
             disabled={!canGenerate}
             title="Generate schedule and navigate to Current match"
           >
-            🚀 Generate Plan
+            🚀 Generate Schedule
           </button>
         </div>
       </div>
@@ -139,7 +139,7 @@ export default function SetupPage({ eventManager }: Props) {
                 <p className="panel-note">Tap to manage players</p>
               </div>
               <div className="player-actions">
-                <button className="primary-btn" onClick={() => navigate('/players')}>Manage Players</button>
+                <button className="primary-btn" onClick={() => navigate('/players')}>Manage players</button>
               </div>
             </div>
           </div>

@@ -541,59 +541,21 @@ select {
 }
 
 .player-list,
-.history-list,
-.schedule-grid {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
+  .schedule-grid {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
 
-.player-item,
-.match-item,
-.history-entry,
-.round-card,
-.history-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 20px;
-  margin-bottom: 16px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.history-card:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 8px 16px rgba(15, 23, 42, 0.08);
-}
-
-.history-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 16px;
-  margin-bottom: 16px;
-}
-
-.history-header h3 {
-  margin: 0;
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: #0f172a;
-}
-
-.match-time {
-  color: #64748b;
-  font-size: 0.85rem;
-  font-weight: 500;
-}
-
-.history-teams {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 12px;
-}
+  .player-item,
+  .match-item,
+  .round-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    margin-bottom: 16px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 
 .team {
   flex: 1;

@@ -108,7 +108,7 @@ export default function SetupPage({ eventManager }: Props) {
       <div className="page-header">
           <div>
           <p className="page-tag">Setup</p>
-          <h2>Manage players and generate the match schedule</h2>
+          <h2>Generate the match schedule</h2>
         </div>
         <div style={{display: 'flex', gap: 8, alignItems: 'center'}}>
           <button

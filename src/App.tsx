@@ -7,7 +7,6 @@ import ToastContainer from './components/ToastContainer';
 import SetupPage from './pages/SetupPage';
 import SchedulePage from './pages/SchedulePage';
 import CurrentMatchPage from './pages/CurrentMatchPage';
-import HistoryPage from './pages/HistoryPage';
 import ResultsPage from './pages/ResultsPage';
 import PlayersPage from './pages/PlayersPage';
 
@@ -72,7 +71,6 @@ function App() {
             <Route path="/setup" element={<SetupPage eventManager={eventManager} />} />
             <Route path="/schedule" element={<SchedulePage eventManager={eventManager} />} />
             <Route path="/current" element={<CurrentMatchPage eventManager={eventManager} />} />
-            <Route path="/history" element={<HistoryPage eventManager={eventManager} />} />
             <Route path="/results" element={<ResultsPage eventManager={eventManager} />} />
             <Route path="/players" element={<PlayersPage eventManager={eventManager} />} />
           </Routes>
@@ -94,10 +92,6 @@ function App() {
           <NavLink to="/players" className={({ isActive }) => `footer-link ${isActive ? 'active' : ''}`} aria-label="Players">
             <span className="footer-link-icon">👥</span>
             <span className="footer-link-label">Players</span>
-          </NavLink>
-          <NavLink to="/history" className={({ isActive }) => `footer-link ${isActive ? 'active' : ''}`} aria-label="History">
-            <span className="footer-link-icon">📜</span>
-            <span className="footer-link-label">History</span>
           </NavLink>
           <NavLink to="/results" className={({ isActive }) => `footer-link ${isActive ? 'active' : ''}`} aria-label="Results">
             <span className="footer-link-icon">🏆</span>

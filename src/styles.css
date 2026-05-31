@@ -226,8 +226,19 @@ a:focus-visible {
   }
 }
 
+.app-footer {
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.app-footer::-webkit-scrollbar {
+  display: none;
+}
+
 .app-footer a {
-  flex: 1;
+  flex: 0 0 auto;
+  min-width: 88px;
   text-align: center;
   text-decoration: none;
   color: #475569;

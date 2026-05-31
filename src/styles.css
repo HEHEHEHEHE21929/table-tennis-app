@@ -594,19 +594,24 @@ select {
   justify-content: space-between;
   align-items: center;
   gap: 16px;
-  padding: 18px;
+  padding: 14px 16px;
 }
 
 .player-info {
-  flex: 1;
+  flex: 1 1 0;
   display: flex;
   gap: 12px;
   align-items: center;
+  min-width: 0;
 }
 
 .player-name {
   font-weight: 600;
-  min-width: 120px;
+  flex: 1 1 0;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .player-item select {
@@ -616,7 +621,7 @@ select {
 button.player-status,
 .player-status {
   display: inline-flex;
-  margin-left: 8px;
+  margin-left: auto;
   padding: 5px 10px;
   border-radius: 9999px;
   font-size: 0.8rem;

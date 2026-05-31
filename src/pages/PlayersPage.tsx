@@ -52,6 +52,17 @@ export default function PlayersPage({ eventManager }: Props) {
 
   return (
     <section className="page-section">
+      <div className="page-header">
+        <div>
+          <p className="page-tag">Players</p>
+          <h2>Manage players</h2>
+        </div>
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+          <button className="ghost-btn" onClick={handleShufflePlayers} disabled={eventManager.state.players.length < 2} title="Shuffle player order">
+            🔀 Shuffle
+          </button>
+        </div>
+      </div>
       <div className="panel players-panel">
         <div className="panel-header">
           <div>

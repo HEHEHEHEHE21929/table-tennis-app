@@ -2,24 +2,26 @@
   color: #111827;
   background: #f8fafc;
   font-family: Inter, system-ui, sans-serif;
-
   --bg: #f3f4f6;
   --surface: #ffffff;
   --surface-muted: #f8fafc;
-  --border: #e2e8f0;
+  --border: #e6eef8;
   --border-strong: #cbd5e1;
-  --panel-shadow: 0 18px 50px rgba(15, 23, 42, 0.06);
+  --panel-shadow: 0 14px 40px rgba(15, 23, 42, 0.07);
+  --card-shadow: 0 8px 20px rgba(15,23,42,0.06);
   --primary: #2563eb;
   --primary-strong: #1d4ed8;
+  --primary-gradient: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
   --success: #16a34a;
   --success-strong: #15803d;
   --danger: #ef4444;
   --muted: #64748b;
+  --footer-bg: linear-gradient(180deg, rgba(255,255,255,0.8), rgba(255,255,255,0.95));
   --surface-border: #dbeafe;
   --radius-xl: 24px;
-  --radius-lg: 20px;
-  --radius-md: 16px;
-  --radius-sm: 12px;
+  --radius-lg: 18px;
+  --radius-md: 14px;
+  --radius-sm: 10px;
 }
 
 * {
@@ -116,7 +118,7 @@ a:focus-visible {
   align-items: center;
   gap: 10px;
   padding: 18px 18px;
-  background: rgba(15, 23, 42, 0.94);
+  background: var(--primary-gradient);
   color: #f8fafc;
   margin-bottom: 0;
   box-shadow: 0 18px 40px rgba(15, 23, 42, 0.14);
@@ -242,7 +244,7 @@ a:focus-visible {
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 24px 18px 110px;
+  padding: 24px 18px 140px;
   width: 100%;
   max-width: 1180px;
   margin: 0 auto;
@@ -255,15 +257,18 @@ a:focus-visible {
 }
 
 .app-footer {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-  background: rgba(255, 255, 255, 0.96);
-  border-top: 1px solid rgba(148, 163, 184, 0.22);
-  padding: 12px 14px;
-  box-shadow: 0 -10px 28px rgba(15, 23, 42, 0.08);
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 10px 10px;
+  font-size: 0.82rem;
+  margin: 0;
+  text-align: center;
+  border-radius: 22px;
+  background: rgba(255,255,255,0.96);
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  box-shadow: 0 18px 34px rgba(15, 23, 42, 0.12);
+  transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease;
+  backdrop-filter: blur(14px);
   flex-shrink: 0;
   position: sticky;
   bottom: 0;
@@ -272,41 +277,61 @@ a:focus-visible {
 
 @media (min-width: 768px) {
   .app-footer {
-    gap: 12px;
+    gap: 16px;
     padding: 14px 24px;
+    border-radius: var(--radius-xl);
   }
 }
 
-.app-footer a {
-  flex: 1;
-  min-width: 120px;
+.footer-link {
+  flex: 1 1 30%;
+  min-width: 96px;
+  max-width: 150px;
   text-align: center;
   text-decoration: none;
   color: #475569;
-  padding: 12px 14px;
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.95);
+  padding: 12px 10px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.94);
   font-weight: 700;
-  font-size: 0.92rem;
-  border: 1px solid rgba(148, 163, 184, 0.24);
-  transition: transform 0.16s ease, background 0.16s ease, box-shadow 0.16s ease;
+  font-size: 0.88rem;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  transition: transform 0.18s ease, background 0.18s ease, box-shadow 0.18s ease, color 0.18s ease;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  line-height: 1.1;
 }
 
-.app-footer a:hover {
+.footer-link:hover {
   background: #ffffff;
-  transform: translateY(-1px);
-  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.08);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.12);
 }
 
-.app-footer a.active {
-  background: linear-gradient(135deg, var(--primary), #4f46e5);
+.footer-link.active {
+  background: var(--primary-gradient);
   color: white;
   border-color: transparent;
-  box-shadow: 0 14px 30px rgba(37, 99, 235, 0.22);
+  box-shadow: 0 18px 40px rgba(37, 99, 235, 0.22);
+}
+
+.footer-link-icon {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.footer-link-label {
+  display: inline-block;
+  line-height: 1.2;
+  font-size: 0.77rem;
+  letter-spacing: 0.01em;
 }
 
 @media (min-width: 768px) {
-  .app-footer a {
+  .footer-link {
     padding: 12px 16px;
     border-radius: 18px;
     font-size: 1rem;
@@ -489,17 +514,18 @@ button {
 }
 
 .primary-btn {
-  padding: 0.95rem 1.5rem;
-  background: var(--primary);
+  padding: 0.85rem 1.25rem;
+  background: var(--primary-gradient);
   color: white;
   font-weight: 700;
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.12);
+  border-radius: 12px;
+  transition: transform 160ms ease, box-shadow 160ms ease, opacity 160ms ease;
 }
 
 .primary-btn:hover {
-  background: var(--primary-strong);
-  transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(37, 99, 235, 0.16);
 }
 
 .primary-btn:active {
@@ -562,11 +588,12 @@ button {
 }
 
 .ghost-btn {
-  padding: 0.75rem 1.2rem;
-  background: transparent;
+  padding: 0.6rem 0.9rem;
+  background: rgba(255,255,255,0.9);
   color: var(--primary);
-  border: 1px solid #c7d2fe;
-  border-radius: 14px;
+  border: 1px solid rgba(37,99,235,0.08);
+  border-radius: 10px;
+  transition: transform 140ms ease, background 140ms ease, box-shadow 140ms ease;
 }
 
 .ghost-btn:hover {
@@ -732,6 +759,7 @@ select {
 .player-name {
   font-weight: 600;
   min-width: 120px;
+  color: #0f172a;
 }
 
 .player-item select {
@@ -1189,6 +1217,7 @@ select {
   font-weight: 600;
   display: block;
   margin-bottom: 4px;
+  color: #0f172a;
 }
 
 .status-badge {
@@ -1365,13 +1394,13 @@ select {
   }
 
   .page-content {
-    padding: 18px 14px;
+    padding: 18px 14px 140px;
   }
 
   .panel,
   section {
-    padding: 16px;
-    margin-bottom: 14px;
+    padding: 14px;
+    margin-bottom: 12px;
     border-radius: 20px;
   }
 
@@ -1440,28 +1469,39 @@ select {
   .app-footer {
     justify-content: space-between;
     flex-wrap: wrap;
-    overflow-x: hidden;
-    overflow-y: visible;
+    overflow: hidden;
     height: auto !important;
-    min-height: 56px;
-    padding: 10px 10px 12px;
+    min-height: 58px;
+    padding: 8px 10px;
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
+    gap: 8px;
     z-index: 20;
+    background: rgba(255, 255, 255, 0.98);
+    border-top: 1px solid rgba(148, 163, 184, 0.18);
   }
 
-  .app-footer a {
-    flex: 0 0 48%;
+  .footer-link {
+    flex: 1 1 30%;
     min-width: 0;
-    padding: 12px 10px;
-    font-size: 0.95rem;
-    margin-bottom: 8px;
+    max-width: calc(33.333% - 8px);
+    padding: 10px 8px;
+    font-size: 0.82rem;
+    margin-bottom: 0;
+  }
+
+  .app-shell.mobile-mode .footer-link {
+    padding: 10px 6px;
+  }
+
+  .app-shell.mobile-mode .footer-link-icon {
+    font-size: 1rem;
   }
 
   .page-tag {
-    padding: 8px 14px;
+    padding: 8px 12px;
   }
 
   .team-pairing {
@@ -1497,8 +1537,23 @@ select {
   @media (max-width: 767px) {
     .primary-btn {
       width: 100%;
-      padding: 12px 16px;
-      font-size: 1rem;
+      padding: 8px 12px;
+      font-size: 0.9rem;
+    }
+
+    .secondary-btn,
+    .ghost-btn,
+    .danger-btn,
+    .remove-btn,
+    .icon-btn {
+      padding: 0.65rem 0.75rem;
+      font-size: 0.88rem;
+      min-width: 0;
+    }
+
+    .view-mode-toggle .mode-btn {
+      padding: 0.5rem 0.65rem;
+      font-size: 0.88rem;
     }
 
     .setup-grid {
@@ -1513,7 +1568,7 @@ select {
     }
 
     .page-content {
-      padding-bottom: 180px;
+      padding-bottom: 140px;
     }
   }
 
@@ -1624,7 +1679,7 @@ select {
     min-width: 140px;
   }
 
-  .app-shell.web-mode .app-footer a {
+  .app-shell.web-mode .footer-link {
     flex: 1;
     min-width: 0;
     padding: 12px 14px;
@@ -1709,9 +1764,9 @@ select {
     min-width: 0;
   }
 
-  .app-shell.mobile-mode .app-footer a {
-    flex: 1 1 45%;
-    min-width: 120px;
+  .app-shell.mobile-mode .footer-link {
+    flex: 1 1 30%;
+    min-width: 0;
     padding: 10px 8px;
     font-size: 0.9rem;
   }
@@ -1760,8 +1815,8 @@ select {
    Panels will scroll internally when content overflows. */
 @media (max-width: 767px) {
   :root {
-    --header-height: 60px;
-    --footer-height: 56px;
+    --header-height: 54px;
+    --footer-height: 62px;
   }
 
   html, body {
@@ -1771,7 +1826,7 @@ select {
   }
 
   #root, .app-shell {
-    height: 100vh;
+    min-height: 100vh;
     max-width: 100%;
     margin: 0 auto;
     overflow: hidden;
@@ -1783,7 +1838,7 @@ select {
     left: 0;
     right: 0;
     height: var(--header-height);
-    padding: 8px 10px;
+    padding: 6px 8px;
     z-index: 40;
   }
 
@@ -1792,9 +1847,37 @@ select {
     bottom: 0;
     left: 0;
     right: 0;
-    height: var(--footer-height);
-    padding: 6px 8px;
+    height: auto;
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    padding: 8px 8px 10px;
     z-index: 40;
+    overflow: hidden;
+    flex-wrap: wrap;
+    background: rgba(255, 255, 255, 0.96);
+    justify-content: space-between;
+    border-top: 1px solid rgba(148, 163, 184, 0.18);
+    backdrop-filter: blur(14px);
+  }
+
+  .app-footer::-webkit-scrollbar {
+    height: 4px;
+  }
+
+  .app-footer::-webkit-scrollbar-thumb {
+    background: rgba(148, 163, 184, 0.45);
+    border-radius: 999px;
+  }
+
+  .footer-link {
+    flex: 1 1 26%;
+    min-width: 80px;
+    max-width: calc(33.333% - 8px);
+    padding: 8px 6px;
+    font-size: 0.72rem;
+    margin: 0;
+    text-align: center;
   }
 
   .page-content {
@@ -1803,37 +1886,143 @@ select {
     bottom: var(--footer-height);
     left: 0;
     right: 0;
-    padding: 8px;
-    overflow: auto; /* main content scrolls internally */
+    padding: 8px 8px 10px;
+    overflow: auto;
     -webkit-overflow-scrolling: touch;
+  }
+
+  /* Make the main section fill the available page-content height
+     and let panels (players/settings) scroll internally so the overall
+     page doesn't require extra vertical scrolling. */
+  .page-section {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+    gap: 8px;
   }
 
   .setup-grid {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    height: 100%;
+    gap: 12px;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  /* Keep the players list compact and scrollable */
+  .players-panel {
+    flex: 0 0 auto;
+  }
+
+  .players-panel .player-list {
+    max-height: 180px;
+    overflow: auto;
+    padding-right: 6px;
+  }
+
+  /* Let the settings panel take remaining space and scroll internally */
+  .settings-panel {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: auto;
+    padding-bottom: 6px;
+  }
+
+  .setup-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    min-height: 0;
   }
 
   .panel {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    flex: 1 1 0;
-    min-height: 0; /* allow children to scroll */
-    overflow: hidden;
+    gap: 10px;
+    min-height: 0;
+    overflow: visible;
   }
 
   .players-panel .player-list {
     overflow: auto;
-    flex: 1 1 auto;
+    max-height: 220px;
     padding-right: 6px;
   }
 
   .settings-panel .settings-card,
   .settings-panel .settings-options {
-    overflow: auto;
-    max-height: 100%;
+    overflow: visible;
+    max-height: none;
+  }
+
+  .settings-card {
+    gap: 8px;
+  }
+
+  .settings-card.compact .settings-options {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .settings-card .settings-options {
+    gap: 8px;
+  }
+
+  .settings-field {
+    gap: 4px;
+  }
+
+  .settings-field select,
+  .settings-field input[type='range'] {
+    padding: 0.6rem 0.7rem;
+    font-size: 0.95rem;
+  }
+
+  .settings-card .settings-info {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4px;
+    padding: 6px;
+    border-radius: 16px;
+    background: #f8fafc;
+    margin-bottom: 0;
+  }
+
+  .settings-card .settings-info p {
+    margin: 0;
+    padding: 6px 8px;
+    border-radius: 14px;
+    background: white;
+    font-size: 0.92rem;
+  }
+
+  .settings-card .settings-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .settings-card .settings-actions button {
+    width: 100%;
+    padding: 0.7rem 0.8rem;
+    font-size: 0.9rem;
+  }
+
+  .page-header {
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .form-row {
+    gap: 6px;
+  }
+
+  .top-player-form {
+    padding-top: 6px;
+    margin-bottom: 10px;
   }
 
   /* Slightly smaller type and tighter spacing on phones */
@@ -1842,4 +2031,39 @@ select {
   .player-name { font-size: 0.95rem; }
   .player-status { font-size: 0.82rem; }
   .panel h3 { font-size: 1rem; }
+
+  /* Collapsible settings for compact mobile UI */
+  .settings-collapse {
+    border-radius: 12px;
+    overflow: hidden;
+    background: transparent;
+    margin-top: 6px;
+  }
+
+  .settings-collapse summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 8px 10px;
+    background: rgba(255,255,255,0.9);
+    border: 1px solid rgba(148,163,184,0.18);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-weight: 700;
+  }
+
+  .settings-collapse summary::-webkit-details-marker { display: none; }
+
+  .settings-collapse[open] summary {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  .settings-collapse .settings-card {
+    padding-top: 10px;
+    margin-top: 0;
+    background: transparent;
+    border: none;
+  }
 }

@@ -9,6 +9,7 @@ import SchedulePage from './pages/SchedulePage';
 import CurrentMatchPage from './pages/CurrentMatchPage';
 import HistoryPage from './pages/HistoryPage';
 import ResultsPage from './pages/ResultsPage';
+import PlayersPage from './pages/PlayersPage';
 
 function App() {
   const eventManager = useEventManager();
@@ -73,15 +74,35 @@ function App() {
             <Route path="/current" element={<CurrentMatchPage eventManager={eventManager} />} />
             <Route path="/history" element={<HistoryPage eventManager={eventManager} />} />
             <Route path="/results" element={<ResultsPage eventManager={eventManager} />} />
+            <Route path="/players" element={<PlayersPage eventManager={eventManager} />} />
           </Routes>
         </main>
 
         <nav className="app-footer" role="navigation" aria-label="Main navigation">
-          <NavLink to="/setup" className={({ isActive }) => (isActive ? 'active' : '')}>Setup</NavLink>
-          <NavLink to="/schedule" className={({ isActive }) => (isActive ? 'active' : '')}>Schedule</NavLink>
-          <NavLink to="/current" className={({ isActive }) => (isActive ? 'active' : '')}>Current</NavLink>
-          <NavLink to="/history" className={({ isActive }) => (isActive ? 'active' : '')}>History</NavLink>
-          <NavLink to="/results" className={({ isActive }) => (isActive ? 'active' : '')}>Results</NavLink>
+          <NavLink to="/setup" className={({ isActive }) => `footer-link ${isActive ? 'active' : ''}`} aria-label="Setup">
+            <span className="footer-link-icon">⚙️</span>
+            <span className="footer-link-label">Setup</span>
+          </NavLink>
+          <NavLink to="/schedule" className={({ isActive }) => `footer-link ${isActive ? 'active' : ''}`} aria-label="Schedule">
+            <span className="footer-link-icon">🗓️</span>
+            <span className="footer-link-label">Schedule</span>
+          </NavLink>
+          <NavLink to="/current" className={({ isActive }) => `footer-link ${isActive ? 'active' : ''}`} aria-label="Current">
+            <span className="footer-link-icon">🎯</span>
+            <span className="footer-link-label">Current</span>
+          </NavLink>
+          <NavLink to="/players" className={({ isActive }) => `footer-link ${isActive ? 'active' : ''}`} aria-label="Players">
+            <span className="footer-link-icon">👥</span>
+            <span className="footer-link-label">Players</span>
+          </NavLink>
+          <NavLink to="/history" className={({ isActive }) => `footer-link ${isActive ? 'active' : ''}`} aria-label="History">
+            <span className="footer-link-icon">📜</span>
+            <span className="footer-link-label">History</span>
+          </NavLink>
+          <NavLink to="/results" className={({ isActive }) => `footer-link ${isActive ? 'active' : ''}`} aria-label="Results">
+            <span className="footer-link-icon">🏆</span>
+            <span className="footer-link-label">Results</span>
+          </NavLink>
         </nav>
 
         <ToastContainer toasts={toast.toasts} onClose={toast.removeToast} />

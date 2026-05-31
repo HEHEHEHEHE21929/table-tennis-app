@@ -14,6 +14,7 @@ export default function SetupPage({ eventManager }: Props) {
   const [compactMode, setCompactMode] = useState<boolean>(window.innerWidth < 768);
   const { showToast } = useAppToast();
   const navigate = useNavigate();
+  const isMobile = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(max-width: 767px)').matches;
 
   const settings = eventManager.state.settings;
   const activePlayers = eventManager.state.players.filter(p => p.status === 'Active' || p.status === 'Arriving later');
@@ -130,7 +131,20 @@ export default function SetupPage({ eventManager }: Props) {
       </div>
 
       <div className="setup-grid">
-        <div className="panel players-panel">
+        {isMobile ? (
+          <div className="panel">
+            <div className="panel-header">
+              <div>
+                <h3>Players ({eventManager.state.players.length})</h3>
+                <p className="panel-note">Tap to manage players</p>
+              </div>
+              <div className="player-actions">
+                <button className="primary-btn" onClick={() => navigate('/players')}>Manage Players</button>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="panel players-panel">
           <div className="panel-header">
             <div>
               <h3>Players ({eventManager.state.players.length})</h3>
@@ -212,8 +226,8 @@ export default function SetupPage({ eventManager }: Props) {
               </li>
             ))}
           </ul>
-
         </div>
+        )}
 
         <div className="panel settings-panel">
           <div className="panel-header">
@@ -228,77 +242,81 @@ export default function SetupPage({ eventManager }: Props) {
             </div>
           </div>
 
-          <div className={`settings-card success-box ${compactMode ? 'compact' : ''}`}>
-            <div className="settings-options">
-              <div className="settings-field">
-                <label htmlFor="tables">Tables 🏓</label>
-                <select
-                  id="tables"
-                  value={settings.numTables}
-                  onChange={(event) => handleSettingsChange({ numTables: Number(event.target.value) as 1 | 2 })}
-                >
-                  <option value={1}>1 table 🏓</option>
-                  <option value={2}>2 tables 🏓🏓</option>
-                </select>
-              </div>
+          <details className="settings-collapse" open={!compactMode}>
+            <summary className="settings-collapse-summary">Configuration</summary>
 
-              <div className="settings-field">
-                <label htmlFor="gameType">Game mode 🎮</label>
-                <select
-                  id="gameType"
-                  value={settings.teamSize}
-                  onChange={(event) => handleSettingsChange({ teamSize: Number(event.target.value) as 1 | 2 })}
-                >
-                  <option value={1}>1v1 🤜🤛</option>
-                  <option value={2}>2v2 🧑‍🤝‍🧑</option>
-                </select>
-              </div>
-
-              <div className="settings-field">
-                <div className="settings-field-row">
-                  <label htmlFor="rounds">Rounds 🔢</label>
-                  <span>{settings.numRounds}</span>
+            <div className={`settings-card success-box ${compactMode ? 'compact' : ''}`}>
+              <div className="settings-options">
+                <div className="settings-field">
+                  <label htmlFor="tables">Tables 🏓</label>
+                  <select
+                    id="tables"
+                    value={settings.numTables}
+                    onChange={(event) => handleSettingsChange({ numTables: Number(event.target.value) as 1 | 2 })}
+                  >
+                    <option value={1}>1 table 🏓</option>
+                    <option value={2}>2 tables 🏓🏓</option>
+                  </select>
                 </div>
-                <input
-                  id="rounds"
-                  type="range"
-                  min={1}
-                  max={10}
-                  value={settings.numRounds}
-                  onChange={(event) => handleSettingsChange({ numRounds: Number(event.target.value) })}
-                />
+
+                <div className="settings-field">
+                  <label htmlFor="gameType">Game mode 🎮</label>
+                  <select
+                    id="gameType"
+                    value={settings.teamSize}
+                    onChange={(event) => handleSettingsChange({ teamSize: Number(event.target.value) as 1 | 2 })}
+                  >
+                    <option value={1}>1v1 🤜🤛</option>
+                    <option value={2}>2v2 🧑‍🤝‍🧑</option>
+                  </select>
+                </div>
+
+                <div className="settings-field">
+                  <div className="settings-field-row">
+                    <label htmlFor="rounds">Rounds 🔢</label>
+                    <span>{settings.numRounds}</span>
+                  </div>
+                  <input
+                    id="rounds"
+                    type="range"
+                    min={1}
+                    max={10}
+                    value={settings.numRounds}
+                    onChange={(event) => handleSettingsChange({ numRounds: Number(event.target.value) })}
+                  />
+                </div>
               </div>
-            </div>
 
-            <h4>Current Configuration ✨</h4>
-            <div className="settings-info compact-summary">
-              <p>🏓 <strong>Tables:</strong> {settings.numTables}</p>
-              <p>🎮 <strong>Game:</strong> {settings.teamSize}v{settings.teamSize}</p>
-              <p>🔢 <strong>Rounds:</strong> {settings.numRounds}</p>
-              <p>👥 <strong>Active players:</strong> {activePlayers.length} / {requiredPlayers} required</p>
-            </div>
+              <h4>Current Configuration ✨</h4>
+              <div className="settings-info compact-summary">
+                <p>🏓 <strong>Tables:</strong> {settings.numTables}</p>
+                <p>🎮 <strong>Game:</strong> {settings.teamSize}v{settings.teamSize}</p>
+                <p>🔢 <strong>Rounds:</strong> {settings.numRounds}</p>
+                <p>👥 <strong>Active players:</strong> {activePlayers.length} / {requiredPlayers} required</p>
+              </div>
 
-            <div className="settings-actions">
-              <button
-                className="success-btn"
-                onClick={handleGenerateSchedule}
-                disabled={!canGenerate}
-              >
-                🧩 Generate Schedule
-              </button>
-              <button
-                className="secondary-btn"
-                onClick={handleRegenerateFromCurrent}
-                disabled={eventManager.state.rounds.length === 0}
-              >
-                🔄 Regenerate from current round
+              <div className="settings-actions">
+                <button
+                  className="success-btn"
+                  onClick={handleGenerateSchedule}
+                  disabled={!canGenerate}
+                >
+                  🧩 Generate Schedule
+                </button>
+                <button
+                  className="secondary-btn"
+                  onClick={handleRegenerateFromCurrent}
+                  disabled={eventManager.state.rounds.length === 0}
+                >
+                  🔄 Regenerate from current round
+                </button>
+              </div>
+              <p className="warning-note">Completed matches stay locked. Upcoming matches update from the current round.</p>
+              <button className="danger-btn" onClick={handleClearAllPlayers} disabled={eventManager.state.players.length === 0}>
+                🗑️ Clear All Players
               </button>
             </div>
-            <p className="warning-note">Completed matches stay locked. Upcoming matches update from the current round.</p>
-            <button className="danger-btn" onClick={handleClearAllPlayers} disabled={eventManager.state.players.length === 0}>
-              🗑️ Clear All Players
-            </button>
-          </div>
+          </details>
         </div>
       </div>
     </section>
